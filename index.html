@@ -187,22 +187,25 @@ const selA=document.getElementById('selA'), selB=document.getElementById('selB')
   selA.add(new Option(f.nome,f.id)); selB.add(new Option(f.nome,f.id));
 });
 [selA,selB].forEach(s=>s.add(new Option('— selecione —',''),0));
-let A='sede', B='gua', seq=0;
+let A=null, B=null, seq=0, verTodos=false;
 selA.onchange=()=>{A=selA.value||null;update();};
 selB.onchange=()=>{B=selB.value||null;update();};
-document.getElementById('swap').onclick=()=>{[A,B]=[B,A];update();};
 document.getElementById('clear').onclick=()=>{A=B=null;update();map.fitBounds(allBounds);};
-document.getElementById('fit').onclick=()=>map.fitBounds(allBounds);
+document.getElementById('fit').onclick=()=>{verTodos=true; refreshIcons(); map.fitBounds(allBounds);};
 function pick(id){ if(!A||(A&&B)){A=id;B=null;} else if(id!==A){B=id;} update(); }
 
-async function update(){
-  const my=++seq;
-  selA.value=A||''; selB.value=B||'';
+function refreshIcons(){
   FORUNS.forEach(f=>{
-    const cls = f.id===A?'a':f.id===B?'b':(A&&B?'dim':'');
+    const cls = f.id===A?'a':f.id===B?'b':(A&&B&&!verTodos?'dim':'');
     markers[f.id].setIcon(iconFor(f,cls));
     markers[f.id].setZIndexOffset(cls==='a'||cls==='b'?1000:0);
   });
+}
+async function update(){
+  const my=++seq;
+  selA.value=A||''; selB.value=B||'';
+  verTodos=false;
+  refreshIcons();
   document.getElementById('hint').textContent = !A?'Clique em um fórum no mapa para definir a origem.':!B?'Agora clique no fórum de destino.':'Clique em outro fórum para começar uma nova rota.';
   routeLayer.clearLayers();
 
