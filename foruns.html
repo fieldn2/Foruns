@@ -7,9 +7,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--panel:#141c22;--line:#2a3943;--text:#e8eef2;--muted:#9fb1bc;--accent:#1a73e8;--a:#22c55e;--b:#ef4444}
+  :root{--panel:#000000;--line:#2a2a2a;--text:#f1f1f1;--muted:#a0a0a0;--accent:#1a73e8;--a:#22c55e;--b:#ef4444;--ctl:#141414;--card:#0d0d0d;--card2:#000000;--link:#8ab4f8;--lbl:#fff;--halo:#000}
+  body.light{--panel:#ffffff;--line:#dadce0;--text:#202124;--muted:#5f6368;--ctl:#f1f3f4;--card:#f8f9fa;--card2:#ffffff;--link:#1a73e8;--lbl:#fff;--halo:#000}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:#111;color:var(--text)}
+  html,body{margin:0;height:100%;font-family:Inter,system-ui,sans-serif;background:var(--panel);color:var(--text)}
   .app{display:grid;grid-template-columns:350px 1fr;height:100vh}
   @media (max-width:860px){.app{grid-template-columns:1fr;grid-template-rows:auto 75vh;height:auto}}
   aside{background:var(--panel);border-right:1px solid var(--line);padding:20px;overflow:auto;z-index:2}
@@ -18,45 +19,48 @@
   label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.06em}
   .sel{display:flex;align-items:center;gap:8px}
   .dot{width:12px;height:12px;border-radius:50%;flex:none}
-  select{flex:1;min-width:0;background:#1c262e;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px}
+  select{flex:1;min-width:0;background:var(--ctl);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px}
   .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-  button{background:#1c262e;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+  button{background:var(--ctl);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
   button:hover{border-color:#8ab4f8}
   .hint{font-size:12.5px;color:var(--muted);margin-top:8px}
-  .result{margin-top:16px;background:linear-gradient(160deg,#1d2a33,#18222a);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .result{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
   .big{font-size:38px;font-weight:700;line-height:1}
   .big small{font-size:16px;font-weight:500;color:var(--muted);margin-left:4px}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-  .stat{background:#141c22;border-radius:8px;padding:10px}
+  .stat{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px}
   .stat b{display:block;font-size:18px}
   .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
   .via{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5}
-  .gm{display:inline-block;margin-top:12px;color:#8ab4f8;font-size:13px;text-decoration:none}
+  .gm{display:inline-block;margin-top:12px;color:var(--link);font-size:13px;text-decoration:none}
   .gm:hover{text-decoration:underline}
   .loading{color:var(--muted);font-size:13px}
   .near{margin-top:18px}
   .near h2{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
   .near ul{padding:0;margin:0}
   .near li{list-style:none;display:flex;justify-content:space-between;gap:8px;padding:7px 8px;border-radius:6px;font-size:13.5px;cursor:pointer}
-  .near li:hover{background:#1c262e}
+  .near li:hover{background:var(--ctl)}
   .near li span:last-child{color:var(--muted);white-space:nowrap}
-  .note{font-size:11.5px;color:#7c8e99;margin-top:18px;line-height:1.5}
-  #map{height:100%;width:100%}
-  .black-base{filter:brightness(.45) contrast(1.6)}
+  .note{font-size:11.5px;color:var(--muted);margin-top:18px;line-height:1.5}
+  #map{height:100%;width:100%;background:#111}
+  body.light #map{background:#e8eee4}
+  .theme{width:100%;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600}
+  .dk-topo{filter:invert(1) hue-rotate(180deg) brightness(.95) contrast(1.05)}
   /* marcadores no estilo do Google Maps */
   .pin{display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-14px);white-space:nowrap;cursor:pointer}
-  .pin .pill{background:#0b0f12;color:#fff;font-weight:600;font-size:12px;padding:5px 10px;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.15)}
-  .pin .lbl{margin-top:3px;font-size:11.5px;font-weight:700;color:#000;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 2px #fff}
+  .pin .pill{background:#0b0f12;color:#fff;font-weight:600;font-size:12px;padding:5px 10px;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.45);border:2px solid #000}
+  .pin .lbl{margin-top:3px;font-size:11.5px;font-weight:700;color:var(--lbl);text-shadow:-1.5px -1.5px 0 var(--halo),1.5px -1.5px 0 var(--halo),-1.5px 1.5px 0 var(--halo),1.5px 1.5px 0 var(--halo),0 -1.5px 0 var(--halo),0 1.5px 0 var(--halo),-1.5px 0 0 var(--halo),1.5px 0 0 var(--halo),0 0 4px var(--halo)}
   .pin.a .pill{background:var(--a)} .pin.b .pill{background:var(--b)}
   .pin.dim{opacity:.5}
   .leaflet-div-icon{background:none;border:none}
-  .route-tag{display:inline-block;background:#8ab4f8;color:#000;border:1px solid #1a73e8;font-weight:700;font-size:14px;padding:6px 12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.4);white-space:nowrap;transform:translate(-50%,-50%)}
+  .route-tag{display:inline-block;background:#8ab4f8;color:#000;border:2px solid #000;font-weight:700;font-size:14px;padding:6px 12px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.4);white-space:nowrap;transform:translate(-50%,-50%)}
   .leaflet-control-layers{font-family:Inter,system-ui,sans-serif}
 </style>
 </head>
 <body>
 <div class="app">
   <aside>
+    <button class="theme" id="theme"></button>
     <h1>Fóruns do TJDFT</h1>
     <p class="sub">Escolha dois fóruns (nas listas ou clicando no mapa) para ver a rota de carro real, a distância e o tempo.</p>
 
@@ -85,27 +89,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const FORUNS = [
-  {id:'brz', nome:'Fórum de Brazlândia',        lat:-15.68236, lng:-48.20873, r:4.3},
-  {id:'sob', nome:'Fórum de Sobradinho',        lat:-15.65191, lng:-47.79534, r:4.2},
-  {id:'pla', nome:'Fórum de Planaltina',        lat:-15.61827, lng:-47.65208, r:4.5},
-  {id:'vij', nome:'Fórum VIJ',                  lat:-15.74145, lng:-47.90770, r:4.8},
-  {id:'909', nome:'Fórum 909',                  lat:-15.76691, lng:-47.89880, r:5.0},
-  {id:'ita', nome:'Fórum do Itapoã',            lat:-15.74055, lng:-47.76912, r:4.0},
-  {id:'par', nome:'Fórum do Paranoá',           lat:-15.78327, lng:-47.78597, r:4.1},
-  {id:'sede',nome:'Fórum Milton Sebastião Barbosa (SEDE)', lat:-15.78450, lng:-47.90200, r:null, tag:'SEDE'},
-  {id:'nac', nome:'Fórum NAC',                  lat:-15.81236, lng:-47.93251, r:null},
-  {id:'gua', nome:'Fórum do Guará',             lat:-15.82873, lng:-47.97699, r:4.3},
-  {id:'des', nome:'Fórum Júlio Leal Fagundes',  lat:-15.83373, lng:-47.94749, r:3.8},
-  {id:'nb',  nome:'Fórum do Núcleo Bandeirante',lat:-15.87373, lng:-47.96481, r:4.2},
-  {id:'agc', nome:'Fórum de Águas Claras',      lat:-15.84327, lng:-48.01631, r:4.4},
-  {id:'tag', nome:'Fórum de Taguatinga',        lat:-15.82464, lng:-48.07015, r:4.2},
-  {id:'cei', nome:'Fórum de Ceilândia',         lat:-15.82191, lng:-48.10620, r:4.2},
-  {id:'sam', nome:'Fórum de Samambaia',         lat:-15.88691, lng:-48.08841, r:4.0},
-  {id:'rec', nome:'Fórum do Recanto das Emas',  lat:-15.91236, lng:-48.07717, r:4.0},
-  {id:'rf',  nome:'Fórum do Riacho Fundo',      lat:-15.88645, lng:-48.01397, r:5.0},
-  {id:'sse', nome:'Fórum de São Sebastião',     lat:-15.90918, lng:-47.77474, r:4.3},
-  {id:'gam', nome:'Fórum do Gama',              lat:-16.01600, lng:-48.06500, r:4.3},
-  {id:'sma', nome:'Fórum de Santa Maria',       lat:-16.02145, lng:-48.01631, r:4.4},
+  {id:'brz', nome:'Fórum de Brazlândia',        lat:-15.68069, lng:-48.20394, r:4.3},
+  {id:'sob', nome:'Fórum de Sobradinho',        lat:-15.65119, lng:-47.79306, r:4.2},
+  {id:'pla', nome:'Fórum de Planaltina',        lat:-15.61781, lng:-47.65406, r:4.5},
+  {id:'vij', nome:'Fórum VIJ',                  lat:-15.73906, lng:-47.90444, r:4.8},
+  {id:'909', nome:'Fórum 909',                  lat:-15.76269, lng:-47.89581, r:5.0},
+  {id:'ita', nome:'Fórum do Itapoã',            lat:-15.73806, lng:-47.76706, r:4.0},
+  {id:'par', nome:'Fórum do Paranoá',           lat:-15.78019, lng:-47.78369, r:4.1},
+  {id:'sede',nome:'Fórum Milton Sebastião Barbosa (SEDE)', lat:-15.78819, lng:-47.90881, r:null, tag:'SEDE'},
+  {id:'nac', nome:'Fórum NAC',                  lat:-15.80919, lng:-47.92944, r:null},
+  {id:'gua', nome:'Fórum do Guará',             lat:-15.82481, lng:-47.97331, r:4.3},
+  {id:'des', nome:'Fórum Júlio Leal Fagundes',  lat:-15.83019, lng:-47.94419, r:3.8},
+  {id:'nb',  nome:'Fórum do Núcleo Bandeirante',lat:-15.86881, lng:-47.96081, r:4.2},
+  {id:'agc', nome:'Fórum de Águas Claras',      lat:-15.83906, lng:-48.01306, r:4.4},
+  {id:'tag', nome:'Fórum de Taguatinga',        lat:-15.82119, lng:-48.06681, r:4.2},
+  {id:'cei', nome:'Fórum de Ceilândia',         lat:-15.81856, lng:-48.10269, r:4.2},
+  {id:'sam', nome:'Fórum de Samambaia',         lat:-15.88231, lng:-48.08431, r:4.0},
+  {id:'rec', nome:'Fórum do Recanto das Emas',  lat:-15.90744, lng:-48.07369, r:4.0},
+  {id:'rf',  nome:'Fórum do Riacho Fundo',      lat:-15.88206, lng:-48.01094, r:5.0},
+  {id:'sse', nome:'Fórum de São Sebastião',     lat:-15.90419, lng:-47.77294, r:4.3},
+  {id:'gam', nome:'Fórum do Gama',              lat:-16.00919, lng:-48.06169, r:4.3},
+  {id:'sma', nome:'Fórum de Santa Maria',       lat:-16.01481, lng:-48.01294, r:4.4},
 ];
 const byId = Object.fromEntries(FORUNS.map(f=>[f.id,f]));
 const shortName = f => f.id==='sede' ? 'Milton Sebastião' : f.nome.replace(/^Fórum (de |do |da )?/,'');
@@ -119,13 +123,29 @@ const map = L.map('map',{zoomControl:true}).setView([-15.83,-47.93],11);
 const ESRI='https://server.arcgisonline.com/ArcGIS/rest/services/';
 const esri=(path,opt={})=>L.tileLayer(ESRI+path+'/MapServer/tile/{z}/{y}/{x}',Object.assign({maxZoom:19,attribution:'Tiles © Esri, HERE, Garmin, © OpenStreetMap'},opt));
 const bases = {
-  'Mapa preto': L.layerGroup([esri('Canvas/World_Dark_Gray_Base',{maxNativeZoom:16,className:'black-base'}), esri('Canvas/World_Dark_Gray_Reference',{maxNativeZoom:16})]),
+  'Mapa preto': esri('World_Topo_Map',{className:'dk-topo'}),
   'Mapa verde (relevo)': esri('World_Topo_Map'),
   'Mapa colorido': esri('World_Street_Map'),
   'Satélite': L.layerGroup([esri('World_Imagery'), esri('Reference/World_Transportation'), esri('Reference/World_Boundaries_and_Places')]),
   'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}),
 };
-bases['Mapa verde (relevo)'].addTo(map);
+let current=null;
+function setBase(name){ if(current) map.removeLayer(current); current=bases[name]; current.addTo(map); }
+function applyPanel(mode){
+  document.body.classList.toggle('light',mode==='light');
+  document.getElementById('theme').textContent = mode==='light' ? '🌙 Mudar para modo escuro' : '☀️ Mudar para modo claro';
+  try{localStorage.setItem('tema',mode);}catch(e){}
+}
+// trocar o fundo pelo botão de camadas também troca o tema da barra lateral
+map.on('baselayerchange',e=>{current=e.layer; applyPanel(e.name==='Mapa preto'?'dark':'light');});
+function setTheme(mode){
+  applyPanel(mode);
+  setBase(mode==='light' ? 'Mapa verde (relevo)' : 'Mapa preto');
+}
+document.getElementById('theme').onclick=()=>setTheme(document.body.classList.contains('light')?'dark':'light');
+let temaInicial='dark'; try{temaInicial=localStorage.getItem('tema')||'dark';}catch(e){}
+setTheme(temaInicial);
+setBase('Satélite'); // abre sempre no satélite
 L.control.layers(bases,null,{position:'topright'}).addTo(map);
 L.control.scale({imperial:false}).addTo(map);
 
