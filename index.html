@@ -61,18 +61,18 @@
   <aside>
     <button class="theme" id="theme"></button>
     <h1>Fóruns do TJDFT</h1>
-    <p class="sub">Escolha dois fóruns (nas listas ou clicando no mapa) para ver a rota de carro real, a distância e o tempo.</p>
+    <p class="sub">Escolha dois fóruns para ver a rota.</p>
 
     <label>Origem</label>
     <div class="sel"><span class="dot" style="background:var(--a)"></span><select id="selA"></select></div>
     <label>Destino</label>
     <div class="sel"><span class="dot" style="background:var(--b)"></span><select id="selB"></select></div>
-    <div class="row"><button id="swap">⇅ Inverter</button><button id="clear">Limpar</button><button id="fit">Ver todos</button></div>
+    <div class="row"><button id="clear">Limpar</button><button id="fit">Ver todos</button></div>
     <div class="hint" id="hint"></div>
 
     <div class="result" id="result" hidden>
       <div id="resBody"></div>
-      <a class="gm" id="gm" href="#" target="_blank" rel="noopener">Abrir esta rota no Google Maps ↗</a>
+      <a class="gm" id="gm" href="#" target="_blank" rel="noopener">Abrir o Google Maps ↗</a>
     </div>
 
     <div class="near" id="near" hidden>
@@ -80,7 +80,6 @@
       <ul id="nearList"></ul>
     </div>
 
-    <p class="note">Rotas calculadas sobre as ruas reais (OpenStreetMap / OSRM), sem considerar trânsito. Use o link do Google Maps para ver o tempo com trânsito.</p>
   </aside>
   <div id="map"></div>
 </div>
